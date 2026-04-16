@@ -1,4 +1,5 @@
 .env
+context.md
 
 # WordPress runtime/generated content
 wp-content/uploads/

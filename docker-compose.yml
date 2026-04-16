@@ -26,6 +26,18 @@ services:
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+          $_SERVER['HTTPS'] = 'on';
+        }
+        if (getenv('WP_HOME')) {
+          define('WP_HOME', getenv('WP_HOME'));
+        }
+        if (getenv('WP_SITEURL')) {
+          define('WP_SITEURL', getenv('WP_SITEURL'));
+        }
+      WP_HOME: ${WP_HOME:-}
+      WP_SITEURL: ${WP_SITEURL:-}
 
   # SSL 및 도메인 관리를 위한 도구 추가
   npm:
@@ -34,7 +46,7 @@ services:
     ports:
       - '80:80'    # HTTP
       - '443:443'  # HTTPS
-      - '81:81'    # 관리 화면 포트
+      - '127.0.0.1:81:81'  # admin UI only on server localhost
     volumes:
       - ./npm/data:/data
       - ./npm/letsencrypt:/etc/letsencrypt

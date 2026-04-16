@@ -20,5 +20,19 @@ jobs:
           port: 22
           script: |
             cd ~/apps/tofu-ray-commerce
-            git pull origin main
-            docker compose up -d --build
+
+            # .env is server-local and should exist before deploy.
+            if [ ! -f .env ]; then
+              echo "ERROR: .env not found on server. Create ~/apps/tofu-ray-commerce/.env first."
+              exit 1
+            fi
+
+            # If tracked files were edited on server, stash them to avoid pull failure.
+            if ! git diff --quiet || ! git diff --cached --quiet; then
+              echo "Tracked local changes detected on server. Stashing before deploy."
+              git stash push -m "auto-stash-before-deploy-$(date +%s)" || true
+            fi
+
+            git pull --ff-only origin main
+            docker compose up -d --remove-orphans
+            docker compose ps

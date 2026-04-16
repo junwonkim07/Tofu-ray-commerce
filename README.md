@@ -47,18 +47,34 @@ docker compose ps
 ## Domain + SSL with Nginx Proxy Manager
 
 1. Create DNS A record for your domain to point to server IP.
-2. Open NPM admin at http://SERVER_IP:81.
-3. Login with default account (change immediately):
+2. NPM admin is bound to localhost only (127.0.0.1:81).
+3. Access NPM admin through SSH tunnel from your PC:
+
+```bash
+ssh -L 8181:127.0.0.1:81 root@SERVER_IP
+```
+
+Then open http://127.0.0.1:8181 in your browser.
+4. Login with default account (change immediately):
 	- Email: admin@example.com
 	- Password: changeme
-4. Add Proxy Host:
+5. Add Proxy Host:
 	- Domain Names: your domain
 	- Forward Hostname/IP: wordpress
 	- Forward Port: 80
-5. In SSL tab:
+6. In SSL tab:
 	- Request a new SSL Certificate
 	- Enable Force SSL
 	- Agree to Let\'s Encrypt terms and save
+
+## WordPress HTTPS URL Pinning
+
+Set these in your server .env after SSL is ready:
+
+```env
+WP_HOME=https://your-domain
+WP_SITEURL=https://your-domain
+```
 
 ## Notes
 

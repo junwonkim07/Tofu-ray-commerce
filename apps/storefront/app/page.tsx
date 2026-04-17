@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { mockProducts } from '@tofu-ray/core'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/product-card'
+import { GradientGlow } from '@/components/gradient-glow'
 import { ArrowRight, MessageCircle, Shield, KeyRound } from 'lucide-react'
 
 export default function HomePage() {
@@ -10,7 +11,8 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative bg-muted/30 min-h-screen flex items-center overflow-hidden">
-        <div className="container flex flex-col items-start justify-center gap-6 py-24">
+        <GradientGlow />
+        <div className="container flex flex-col items-start justify-center gap-6 py-24 relative z-10">
           <span className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
             
           </span>

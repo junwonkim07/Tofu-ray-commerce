@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import Link from 'next/link'
 
 interface NoticePost {
   id: string
@@ -28,7 +28,7 @@ const initialPosts: NoticePost[] = [
 ]
 
 export default function NoticePage() {
-  const [posts] = useState<NoticePost[]>(initialPosts)
+  const posts = initialPosts
 
   return (
     <div className="container py-12 space-y-8">
@@ -39,17 +39,19 @@ export default function NoticePage() {
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div>
         {posts.map((post) => (
-          <article key={post.id} className="border rounded-lg bg-card p-6 space-y-4">
-            <div>
-              <h3 className="text-xl font-semibold">{post.title}</h3>
-              <p className="text-xs text-muted-foreground mt-1">
-                {post.author} · {post.createdAt}
-              </p>
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">{post.content}</p>
-          </article>
+          <Link key={post.id} href={`/notice/${post.id}`} className="block mb-8">
+            <article className="border rounded-lg bg-card p-6 space-y-4 hover:shadow-md transition-shadow cursor-pointer">
+              <div>
+                <h3 className="text-xl font-semibold">{post.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {post.author} · {post.createdAt}
+                </p>
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">{post.content}</p>
+            </article>
+          </Link>
         ))}
       </div>
     </div>

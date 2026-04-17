@@ -1,15 +1,39 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useCart } from '@/lib/cart-context'
 import { formatPrice } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react'
 
+interface CartItem {
+  product: {
+    id: string
+    title: string
+    category: string
+    price: number
+    currency: string
+    handle: string
+  }
+  quantity: number
+}
+
+function getEnglishLabel(handle: string): string {
+  const labelMap: Record<string, string> = {
+    monthly: 'Monthly',
+    quarterly: 'Quarterly',
+    yearly: 'Yearly',
+    'vpn-team-monthly': '5-account team',
+  }
+  return labelMap[handle] || handle
+}
+
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, totalItems, totalPrice } = useCart()
+  
+  // Get currency from first item (assuming all items have same currency)
+  const currency = cart.items.length > 0 ? cart.items[0].product.currency : 'CNY'
 
   if (cart.items.length === 0) {
     return (
@@ -38,14 +62,12 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-4">
           {cart.items.map((item) => (
             <div key={item.product.id} className="flex gap-4 p-4 border rounded-lg bg-card">
-              <div className="relative h-24 w-24 rounded-md overflow-hidden bg-muted shrink-0">
-                <Image
-                  src={item.product.images[0]}
-                  alt={item.product.title}
-                  fill
-                  className="object-cover"
-                  sizes="96px"
-                />
+              <div className="relative h-24 w-24 rounded-md overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10 shrink-0 flex items-center justify-center p-3">
+                <div className="text-center">
+                  <h4 className="text-sm font-bold lacquer-regular text-primary leading-tight break-words">
+                    {getEnglishLabel(item.product.handle)}
+                  </h4>
+                </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
@@ -101,17 +123,17 @@ export default function CartPage() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">상품 금액</span>
-                <span>{formatPrice(totalPrice)}</span>
+                <span>{formatPrice(totalPrice, currency)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">전달 수수료</span>
-                <span>{shipping === 0 ? '무료' : formatPrice(shipping)}</span>
+                <span>{shipping === 0 ? '무료' : formatPrice(shipping, currency)}</span>
               </div>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
               <span>합계</span>
-              <span>{formatPrice(totalPrice + shipping)}</span>
+              <span>{formatPrice(totalPrice + shipping, currency)}</span>
             </div>
             <Button className="w-full" size="lg" asChild>
               <Link href="/checkout">

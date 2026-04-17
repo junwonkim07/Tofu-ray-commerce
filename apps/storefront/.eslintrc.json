@@ -1,0 +1,6 @@
+{
+  "extends": "../../.eslintrc.json",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "rules": {}
+}

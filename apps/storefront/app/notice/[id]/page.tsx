@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ArrowLeft } from 'lucide-react'
+import { noticeAPI } from '@/lib/api-client'
 
 interface NoticePost {
   id: string
@@ -21,40 +22,82 @@ interface Comment {
   createdAt: string
 }
 
-const initialPosts: NoticePost[] = [
-  {
-    id: 'n1',
-    title: 'VPN 구독 발급 안내',
-    content: '결제 후 문의 탭에서 주문번호를 남겨주시면 순차적으로 구독 링크를 전달해드립니다.',
-    author: '관리자',
-    createdAt: '2026-04-17 21:00',
-  },
-  {
-    id: 'n2',
-    title: '야간 서빙 안내',
-    content: '야간에도 문의 남겨주시면 다음 영업일에 빠르게 처리합니다.',
-    author: '관리자',
-    createdAt: '2026-04-17 21:10',
-  },
-]
-
 interface NoticeDetailPageProps {
   params: Promise<{ id: string }>
 }
 
 export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
   const resolvedParams = React.use(params)
-  const post = initialPosts.find((p) => p.id === resolvedParams.id)
-
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: 'c1',
-      author: '운영팀',
-      content: '추가로 궁금한 점이 있으시면 문의 탭에서 연락주세요.',
-      createdAt: '2026-04-17 21:10',
-    },
-  ])
+  const [post, setPost] = useState<NoticePost | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
   const [commentText, setCommentText] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    const loadNotice = async () => {
+      setIsLoading(true)
+      const result = await noticeAPI.getById(resolvedParams.id)
+
+      if (result.data) {
+        const postData: NoticePost = {
+          id: result.data.id,
+          title: result.data.title,
+          content: result.data.content,
+          author: result.data.author || '관리자',
+          createdAt: new Date(result.data.createdAt).toLocaleString('ko-KR'),
+        }
+        setPost(postData)
+
+        const formattedComments = (result.data.comments || []).map((comment: any) => ({
+          id: comment.id,
+          author: comment.author,
+          content: comment.content,
+          createdAt: new Date(comment.createdAt).toLocaleString('ko-KR'),
+        }))
+        setComments(formattedComments)
+      }
+      setIsLoading(false)
+    }
+
+    loadNotice()
+  }, [resolvedParams.id])
+
+  const handleAddComment = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!commentText.trim() || !post) return
+
+    setIsSubmitting(true)
+    try {
+      const result = await noticeAPI.addComment(post.id, {
+        author: '방문자',
+        content: commentText.trim(),
+      })
+
+      if (result.data) {
+        const newComment: Comment = {
+          id: result.data.commentId,
+          author: '방문자',
+          content: commentText.trim(),
+          createdAt: new Date().toLocaleString('ko-KR'),
+        }
+        setComments((prev) => [...prev, newComment])
+        setCommentText('')
+      }
+    } catch (err) {
+      console.error('Failed to add comment:', err)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container py-12">
+        <div className="text-center text-muted-foreground">로드 중...</div>
+      </div>
+    )
+  }
 
   if (!post) {
     return (
@@ -67,21 +110,6 @@ export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
         </div>
       </div>
     )
-  }
-
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!commentText.trim()) return
-
-    const newComment: Comment = {
-      id: crypto.randomUUID(),
-      author: '방문자',
-      content: commentText.trim(),
-      createdAt: new Date().toLocaleString('ko-KR'),
-    }
-
-    setComments((prev) => [...prev, newComment])
-    setCommentText('')
   }
 
   return (
@@ -116,9 +144,10 @@ export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="댓글을 입력하세요"
               className="flex-1"
+              disabled={isSubmitting}
             />
-            <Button type="submit" disabled={!commentText.trim()}>
-              등록
+            <Button type="submit" disabled={!commentText.trim() || isSubmitting}>
+              {isSubmitting ? '등록 중...' : '등록'}
             </Button>
           </div>
         </form>

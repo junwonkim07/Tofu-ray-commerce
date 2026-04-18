@@ -47,6 +47,17 @@ inquiryRoutes.post('/', (req: Request, res: Response) => {
   )
 })
 
+// Get all inquiries
+inquiryRoutes.get('/', (req: Request, res: Response) => {
+  db.all('SELECT * FROM inquiries ORDER BY createdAt DESC', (err, inquiries: any[]) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' })
+    }
+
+    res.json(inquiries || [])
+  })
+})
+
 // Get inquiry with messages
 inquiryRoutes.get('/:inquiryId', (req: Request, res: Response) => {
   const { inquiryId } = req.params

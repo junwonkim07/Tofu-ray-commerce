@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { inquiryAPI } from '@/lib/api-client'
 
 type InquiryMode = 'chat' | 'wechat'
 
@@ -48,76 +49,121 @@ export default function InquiryPage() {
   const [mode, setMode] = useState<InquiryMode>('chat')
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
+  const [inquiryId, setInquiryId] = useState<string | null>(null)
+  const [isSending, setIsSending] = useState(false)
 
   // Initialize messages with cart info
   useEffect(() => {
-    const initialMessages: Message[] = [
-      {
-        id: 'm0',
-        sender: 'admin',
-        type: 'text',
-        text: '안녕하세요! 구독을 원하신 상품 정보를 확인했습니다. 아래 정보로 구독을 진행하시겠습니까?',
-      },
-    ]
+    const initializeInquiry = async () => {
+      const userId = localStorage.getItem('userId')
+      const lastOrderNumber = localStorage.getItem('lastOrderNumber')
 
-    if (cart.items.length > 0) {
-      const orderItems = cart.items.map((item) => ({
-        label: getEnglishLabel(item.product.handle),
-        quantity: item.quantity,
-        price: item.product.price,
-        currency: item.product.currency,
-      }))
+      // Create or get inquiry
+      let currentInquiryId = inquiryId
+      if (!currentInquiryId && userId) {
+        const result = await inquiryAPI.create({
+          userId,
+          subject: `Order: ${lastOrderNumber || 'General Inquiry'}`,
+          initialMessage: null,
+        })
 
-      const totalAmount = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-
-      const cartMessage: OrderMessage = {
-        id: 'cart-info',
-        sender: 'admin',
-        type: 'order',
-        items: orderItems,
-        total: totalAmount,
-        totalCurrency: cart.items[0]?.product.currency || 'CNY',
+        if (result.data) {
+          currentInquiryId = result.data.inquiryId
+          setInquiryId(currentInquiryId)
+        }
       }
-      initialMessages.push(cartMessage)
 
-      initialMessages.push({
-        id: 'm1',
-        sender: 'admin',
-        type: 'text',
-        text: '위 상품에 대해 구독 발급을 진행하겠습니다. 구독 링크와 접속 정보는 이메일로 발송될 예정입니다.',
-      })
-    } else {
-      initialMessages.push({
-        id: 'm1',
-        sender: 'admin',
-        type: 'text',
-        text: '주문번호 또는 구독을 원하시는 상품을 알려주세요.',
-      })
+      const initialMessages: Message[] = [
+        {
+          id: 'm0',
+          sender: 'admin',
+          type: 'text',
+          text: '안녕하세요! 구독을 원하신 상품 정보를 확인했습니다. 아래 정보로 구독을 진행하시겠습니까?',
+        },
+      ]
+
+      if (cart.items.length > 0) {
+        const orderItems = cart.items.map((item) => ({
+          label: getEnglishLabel(item.product.handle),
+          quantity: item.quantity,
+          price: item.product.price,
+          currency: item.product.currency,
+        }))
+
+        const totalAmount = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+
+        const cartMessage: OrderMessage = {
+          id: 'cart-info',
+          sender: 'admin',
+          type: 'order',
+          items: orderItems,
+          total: totalAmount,
+          totalCurrency: cart.items[0]?.product.currency || 'CNY',
+        }
+        initialMessages.push(cartMessage)
+
+        initialMessages.push({
+          id: 'm1',
+          sender: 'admin',
+          type: 'text',
+          text: '위 상품에 대해 구독 발급을 진행하겠습니다. 구독 링크와 접속 정보는 이메일로 발송될 예정입니다.',
+        })
+      } else {
+        initialMessages.push({
+          id: 'm1',
+          sender: 'admin',
+          type: 'text',
+          text: '주문번호 또는 구독을 원하시는 상품을 알려주세요.',
+        })
+      }
+
+      setMessages(initialMessages)
     }
 
-    setMessages(initialMessages)
+    initializeInquiry()
   }, [cart])
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const content = draft.trim()
-    if (!content) return
+    if (!content || !inquiryId || isSending) return
 
-    const userMessage: TextMessage = {
-      id: crypto.randomUUID(),
-      sender: 'user',
-      type: 'text',
-      text: content,
+    setIsSending(true)
+
+    try {
+      // Send message to API
+      const result = await inquiryAPI.addMessage(inquiryId, {
+        sender: 'user',
+        content,
+        messageType: 'text',
+      })
+
+      if (result.error) {
+        console.error('Failed to send message:', result.error)
+        setIsSending(false)
+        return
+      }
+
+      const userMessage: TextMessage = {
+        id: result.data?.messageId || crypto.randomUUID(),
+        sender: 'user',
+        type: 'text',
+        text: content,
+      }
+
+      const adminReply: TextMessage = {
+        id: crypto.randomUUID(),
+        sender: 'admin',
+        type: 'text',
+        text: '확인했습니다. 결제 내역 확인 후 VPN 구독 종류/만료일/접속 링크를 전달드리겠습니다.',
+      }
+
+      setMessages((prev) => [...prev, userMessage, adminReply])
+      setDraft('')
+    } catch (err) {
+      console.error('Error sending message:', err)
+    } finally {
+      setIsSending(false)
     }
-
-    const adminReply: TextMessage = {
-      id: crypto.randomUUID(),
-      sender: 'admin',
-      type: 'text',
-      text: '확인했습니다. 결제 내역 확인 후 VPN 구독 종류/만료일/접속 링크를 전달드리겠습니다.',
-    }
-
-    setMessages((prev) => [...prev, userMessage, adminReply])
-    setDraft('')
   }
 
   return (
@@ -194,9 +240,10 @@ export default function InquiryPage() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               placeholder="주문번호 또는 문의 내용을 입력하세요"
+              disabled={!inquiryId || isSending}
             />
-            <Button type="button" onClick={sendMessage}>
-              전송
+            <Button type="button" onClick={sendMessage} disabled={!inquiryId || isSending || !draft.trim()}>
+              {isSending ? '전송 중...' : '전송'}
             </Button>
           </div>
         </section>

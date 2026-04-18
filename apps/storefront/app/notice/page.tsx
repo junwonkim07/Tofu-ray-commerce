@@ -1,6 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { noticeAPI } from '@/lib/api-client'
 
 interface NoticePost {
   id: string
@@ -10,25 +12,42 @@ interface NoticePost {
   createdAt: string
 }
 
-const initialPosts: NoticePost[] = [
-  {
-    id: 'n1',
-    title: 'VPN 구독 발급 안내',
-    content: '결제 후 문의 탭에서 주문번호를 남겨주시면 순차적으로 구독 링크를 전달해드립니다.',
-    author: '관리자',
-    createdAt: '2026-04-17 21:00',
-  },
-  {
-    id: 'n2',
-    title: '야간 서빙 안내',
-    content: '야간에도 문의 남겨주시면 다음 영업일에 빠르게 처리합니다.',
-    author: '관리자',
-    createdAt: '2026-04-17 21:10',
-  },
-]
-
 export default function NoticePage() {
-  const posts = initialPosts
+  const [posts, setPosts] = useState<NoticePost[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const loadNotices = async () => {
+      setIsLoading(true)
+      const result = await noticeAPI.getAll()
+
+      if (result.data) {
+        // Format dates
+        const formatted = result.data.map((notice: any) => ({
+          id: notice.id,
+          title: notice.title,
+          content: notice.content,
+          author: notice.author || '관리자',
+          createdAt: new Date(notice.createdAt).toLocaleString('ko-KR'),
+        }))
+        setPosts(formatted)
+      }
+      setIsLoading(false)
+    }
+
+    loadNotices()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="container py-12 space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold">공지사항</h1>
+        </div>
+        <div className="text-center text-muted-foreground">로드 중...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="container py-12 space-y-8">
@@ -40,19 +59,25 @@ export default function NoticePage() {
       </div>
 
       <div>
-        {posts.map((post) => (
-          <Link key={post.id} href={`/notice/${post.id}`} className="block mb-8">
-            <article className="border rounded-lg bg-card p-6 space-y-4 hover:shadow-md transition-shadow cursor-pointer">
-              <div>
-                <h3 className="text-xl font-semibold">{post.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {post.author} · {post.createdAt}
-                </p>
-              </div>
-              <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">{post.content}</p>
-            </article>
-          </Link>
-        ))}
+        {posts.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8">
+            공지사항이 없습니다.
+          </div>
+        ) : (
+          posts.map((post) => (
+            <Link key={post.id} href={`/notice/${post.id}`} className="block mb-8">
+              <article className="border rounded-lg bg-card p-6 space-y-4 hover:shadow-md transition-shadow cursor-pointer">
+                <div>
+                  <h3 className="text-xl font-semibold">{post.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {post.author} · {post.createdAt}
+                  </p>
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">{post.content}</p>
+              </article>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   )

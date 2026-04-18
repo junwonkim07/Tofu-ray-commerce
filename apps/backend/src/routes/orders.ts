@@ -81,6 +81,22 @@ orderRoutes.post('/', (req: Request, res: Response) => {
   )
 })
 
+// Get all orders
+orderRoutes.get('/', (req: Request, res: Response) => {
+  db.all('SELECT * FROM orders ORDER BY createdAt DESC', (err, orders: any[]) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' })
+    }
+
+    res.json(
+      (orders || []).map((order) => ({
+        ...order,
+        items: JSON.parse(order.items),
+      }))
+    )
+  })
+})
+
 // Get order
 orderRoutes.get('/:orderNumber', (req: Request, res: Response) => {
   const { orderNumber } = req.params

@@ -3,6 +3,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { initializeDatabase } from './database'
+import { seedDatabase } from './seed'
 import { authRoutes } from './routes/auth'
 import { orderRoutes } from './routes/orders'
 import { inquiryRoutes } from './routes/inquiries'
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Initialize database
 initializeDatabase()
+seedDatabase()
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

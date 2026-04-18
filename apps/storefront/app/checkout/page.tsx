@@ -30,6 +30,8 @@ export default function CheckoutPage() {
   const { cart, totalPrice } = useCart()
   const [form, setForm] = useState<CheckoutForm>(initialForm)
   const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const shipping = 0
   const total = totalPrice + shipping
@@ -40,9 +42,46 @@ export default function CheckoutPage() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setError(null)
+    setIsLoading(true)
+
+    try {
+      const userId = localStorage.getItem('userId')
+      const orderData = {
+        userId: userId || null,
+        items: cart.items,
+        totalPrice,
+        currency,
+        email: form.email,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        postalCode: form.postalCode,
+        country: form.country,
+      }
+
+      const result = await orderAPI.create(orderData)
+
+      if (result.error) {
+        setError(result.error)
+        setIsLoading(false)
+        return
+      }
+
+      if (result.data) {
+        // Save order number to localStorage
+        localStorage.setItem('lastOrderNumber', result.data.orderNumber)
+        setSubmitted(true)
+      }
+    } catch (err) {
+      setError('주문 처리 중 오류가 발생했습니다')
+      setIsLoading(false)
+    }
   }
 
   if (submitted) {
@@ -87,6 +126,11 @@ export default function CheckoutPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="border rounded-lg p-6 bg-card space-y-4">
@@ -241,8 +285,8 @@ export default function CheckoutPage() {
                 <span>합계</span>
                 <span>{formatPrice(total, currency)}</span>
               </div>
-              <Button type="submit" className="w-full" size="lg">
-                주문 완료
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                {isLoading ? '주문 처리 중...' : '주문 완료'}
               </Button>
             </div>
           </div>

@@ -5,6 +5,46 @@ interface ApiResponse<T> {
   error?: string
 }
 
+type JsonObject = Record<string, unknown>
+
+export type OrderResponse = {
+  orderId: string
+  orderNumber: string
+  status: string
+  createdAt: string
+}
+
+export type InquiryCreateResponse = {
+  inquiryId: string
+  subject: string
+  status: string
+  createdAt: string
+}
+
+export type InquiryMessageResponse = {
+  messageId: string
+  inquiryId: string
+  sender: string
+  content: string
+  createdAt: string
+}
+
+export type NoticeCommentResponse = {
+  id: string
+  author: string
+  content: string
+  createdAt: string
+}
+
+export type NoticeResponse = {
+  id: string
+  title: string
+  content: string
+  author?: string
+  createdAt: string
+  comments?: NoticeCommentResponse[]
+}
+
 async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
   try {
     const url = `${API_BASE_URL}${endpoint}`
@@ -59,8 +99,8 @@ export const authAPI = {
 
 // Order API
 export const orderAPI = {
-  create: (orderData: any) =>
-    fetchAPI<{ orderId: string; orderNumber: string; status: string; createdAt: string }>(
+  create: (orderData: JsonObject) =>
+    fetchAPI<OrderResponse>(
       '/api/orders',
       {
         method: 'POST',
@@ -69,17 +109,17 @@ export const orderAPI = {
     ),
 
   getByNumber: (orderNumber: string) =>
-    fetchAPI<any>(`/api/orders/${orderNumber}`, {
+    fetchAPI<OrderResponse>(`/api/orders/${orderNumber}`, {
       method: 'GET',
     }),
 
   getByUser: (userId: string) =>
-    fetchAPI<any[]>(`/api/orders/user/${userId}`, {
+    fetchAPI<OrderResponse[]>(`/api/orders/user/${userId}`, {
       method: 'GET',
     }),
 
   updateStatus: (orderNumber: string, status: string) =>
-    fetchAPI<any>(`/api/orders/${orderNumber}/status`, {
+    fetchAPI<OrderResponse>(`/api/orders/${orderNumber}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     }),
@@ -87,8 +127,8 @@ export const orderAPI = {
 
 // Inquiry API
 export const inquiryAPI = {
-  create: (inquiryData: any) =>
-    fetchAPI<{ inquiryId: string; subject: string; status: string; createdAt: string }>(
+  create: (inquiryData: JsonObject) =>
+    fetchAPI<InquiryCreateResponse>(
       '/api/inquiries',
       {
         method: 'POST',
@@ -97,18 +137,18 @@ export const inquiryAPI = {
     ),
 
   getById: (inquiryId: string) =>
-    fetchAPI<any>(`/api/inquiries/${inquiryId}`, {
+    fetchAPI<InquiryCreateResponse>(`/api/inquiries/${inquiryId}`, {
       method: 'GET',
     }),
 
-  addMessage: (inquiryId: string, messageData: any) =>
-    fetchAPI<any>(`/api/inquiries/${inquiryId}/messages`, {
+  addMessage: (inquiryId: string, messageData: JsonObject) =>
+    fetchAPI<InquiryMessageResponse>(`/api/inquiries/${inquiryId}/messages`, {
       method: 'POST',
       body: JSON.stringify(messageData),
     }),
 
   getByUser: (userId: string) =>
-    fetchAPI<any[]>(`/api/inquiries/user/${userId}`, {
+    fetchAPI<InquiryCreateResponse[]>(`/api/inquiries/user/${userId}`, {
       method: 'GET',
     }),
 }
@@ -116,23 +156,23 @@ export const inquiryAPI = {
 // Notice API
 export const noticeAPI = {
   getAll: () =>
-    fetchAPI<any[]>('/api/notices', {
+    fetchAPI<NoticeResponse[]>('/api/notices', {
       method: 'GET',
     }),
 
   getById: (noticeId: string) =>
-    fetchAPI<any>(`/api/notices/${noticeId}`, {
+    fetchAPI<NoticeResponse>(`/api/notices/${noticeId}`, {
       method: 'GET',
     }),
 
-  create: (noticeData: any) =>
-    fetchAPI<any>('/api/notices', {
+  create: (noticeData: JsonObject) =>
+    fetchAPI<NoticeResponse>('/api/notices', {
       method: 'POST',
       body: JSON.stringify(noticeData),
     }),
 
-  addComment: (noticeId: string, commentData: any) =>
-    fetchAPI<any>(`/api/notices/${noticeId}/comments`, {
+  addComment: (noticeId: string, commentData: JsonObject) =>
+    fetchAPI<{ commentId: string }>(`/api/notices/${noticeId}/comments`, {
       method: 'POST',
       body: JSON.stringify(commentData),
     }),

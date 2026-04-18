@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 export function GlobeBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mousePos = useRef({ x: 0, y: 0 })
-  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -13,8 +12,6 @@ export function GlobeBackground() {
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
-    setContext(ctx)
 
     // Set canvas size
     const resizeCanvas = () => {

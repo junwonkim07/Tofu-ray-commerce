@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,9 +12,16 @@ import { useAuth } from '@/lib/auth-context'
 
 export default function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') || '/inquiry'
+  const [redirectPath, setRedirectPath] = useState('/inquiry')
   const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth()
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const redirect = params.get('redirect')
+    if (redirect && redirect.startsWith('/')) {
+      setRedirectPath(redirect)
+    }
+  }, [])
   
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -26,9 +33,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated) {
-      router.replace(redirect)
+      router.replace(redirectPath)
     }
-  }, [isAuthLoading, isAuthenticated, redirect, router])
+  }, [isAuthLoading, isAuthenticated, redirectPath, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -53,7 +60,7 @@ export default function LoginPage() {
 
       if (result.data) {
         login(result.data)
-        router.replace(redirect)
+        router.replace(redirectPath)
         router.refresh()
       }
     } catch (err) {

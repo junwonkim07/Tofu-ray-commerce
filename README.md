@@ -53,6 +53,33 @@ pnpm install
 | `pnpm lint`   | Lint all packages                  |
 | `pnpm format` | Format all files with Prettier     |
 
+## Production Target (AMD64)
+
+This project is intended to run in AMD64/x64 production environments.
+
+- Recommended runtime: Node.js 20 LTS
+- Recommended CI runner: `ubuntu-22.04` (GitHub-hosted x64)
+- Backend native dependency (`sqlite3`) is validated in CI on x64
+
+If you develop on ARM64 (for example Windows ARM), local runtime issues with native modules can happen even when AMD64 production is healthy.
+
+## Runtime Ports
+
+- Storefront: `3000`
+- Admin: `3002`
+- Backend API: `5000`
+
+## CI/CD
+
+Workflow file: [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml)
+
+What it does:
+
+- CI on push/PR: install, lint, build, and backend health check (`/health`)
+- Package on `main`: uploads backend `dist` artifact
+
+The deploy stage can be added after your production server details are fixed.
+
 ### Run only the storefront
 
 ```bash

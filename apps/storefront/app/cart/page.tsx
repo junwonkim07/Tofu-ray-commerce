@@ -7,18 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react'
 
-interface CartItem {
-  product: {
-    id: string
-    title: string
-    category: string
-    price: number
-    currency: string
-    handle: string
-  }
-  quantity: number
-}
-
 function getEnglishLabel(handle: string): string {
   const labelMap: Record<string, string> = {
     monthly: 'Monthly',

@@ -49,7 +49,7 @@ export default function NoticeDetailPage({ params }: NoticeDetailPageProps) {
         }
         setPost(postData)
 
-        const formattedComments = (result.data.comments || []).map((comment: any) => ({
+        const formattedComments = (result.data.comments || []).map((comment) => ({
           id: comment.id,
           author: comment.author,
           content: comment.content,

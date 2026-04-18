@@ -23,7 +23,7 @@ export default function NoticePage() {
 
       if (result.data) {
         // Format dates
-        const formatted = result.data.map((notice: any) => ({
+        const formatted = result.data.map((notice) => ({
           id: notice.id,
           title: notice.title,
           content: notice.content,

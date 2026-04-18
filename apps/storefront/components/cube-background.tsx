@@ -153,12 +153,9 @@ export function CubeBackground() {
         for (let i = 0; i < points.length; i++) {
           const current = points[i]
           const next = points[(i + 1) % points.length]
-          const nextNext = points[(i + 2) % points.length]
 
           const cp1x = current.x + (next.x - current.x) * 0.7
           const cp1y = current.y + (next.y - current.y) * 0.7
-          const cp2x = next.x - (nextNext.x - next.x) * 0.7
-          const cp2y = next.y - (nextNext.y - next.y) * 0.7
 
           ctx.quadraticCurveTo(cp1x, cp1y, next.x, next.y)
         }

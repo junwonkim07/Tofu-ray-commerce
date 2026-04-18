@@ -1,0 +1,114 @@
+name: CI-CD (AMD64)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10.33.0'
+
+jobs:
+  ci:
+    name: Lint, Build, and Backend Smoke Test
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Start backend
+        run: |
+          nohup pnpm --filter @tofu-ray/backend start > backend.log 2>&1 &
+          echo $! > backend.pid
+
+      - name: Check backend health
+        run: |
+          for i in {1..25}; do
+            if curl -fsS http://127.0.0.1:5000/health > /dev/null; then
+              echo "Backend health check passed"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "Backend health check failed"
+          cat backend.log || true
+          exit 1
+
+      - name: Print backend logs
+        if: always()
+        run: cat backend.log || true
+
+      - name: Stop backend
+        if: always()
+        run: |
+          if [ -f backend.pid ]; then
+            kill $(cat backend.pid) || true
+          fi
+
+  package:
+    name: Build Artifacts (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: ci
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Package backend artifact
+        run: |
+          mkdir -p artifacts/backend
+          cp -r apps/backend/dist artifacts/backend/dist
+          cp apps/backend/package.json artifacts/backend/package.json
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: artifacts/backend
+          if-no-files-found: error
+

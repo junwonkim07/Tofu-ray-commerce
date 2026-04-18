@@ -36,7 +36,7 @@ jobs:
       - name: Install native build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3 make g++
+          sudo apt-get install -y python3 make g++ libsqlite3-dev
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,6 +51,7 @@ jobs:
         run: pnpm --filter @tofu-ray/backend rebuild sqlite3
         env:
           npm_config_build_from_source: true
+          npm_config_sqlite: /usr
 
       - name: Start backend
         run: |
@@ -107,7 +108,7 @@ jobs:
       - name: Install native build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3 make g++
+          sudo apt-get install -y python3 make g++ libsqlite3-dev
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -119,6 +120,7 @@ jobs:
         run: pnpm --filter @tofu-ray/backend rebuild sqlite3
         env:
           npm_config_build_from_source: true
+          npm_config_sqlite: /usr
 
       - name: Package backend artifact
         run: |
@@ -132,5 +134,7 @@ jobs:
           name: backend-dist
           path: artifacts/backend
           if-no-files-found: error
+
+
 
 

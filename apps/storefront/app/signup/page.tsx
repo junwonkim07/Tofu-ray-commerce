@@ -1,13 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { authAPI } from '@/lib/api-client'
+import { useAuth } from '@/lib/auth-context'
 
 export default function SignupPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/inquiry'
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -17,7 +25,13 @@ export default function SignupPage() {
     confirmPassword: '',
   })
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated) {
+      router.replace(redirect)
+    }
+  }, [isAuthLoading, isAuthenticated, redirect, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -30,7 +44,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('비밀번호가 일치하지 않습니다')
       return
@@ -42,10 +56,25 @@ export default function SignupPage() {
     }
 
     setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    // TODO: Implement actual signup logic
+
+    try {
+      const result = await authAPI.signup(formData.email, formData.password)
+
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+
+      if (result.data) {
+        login(result.data)
+        router.replace(redirect)
+        router.refresh()
+      }
+    } catch {
+      setError('회원가입 중 오류가 발생했습니다')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -169,7 +198,7 @@ export default function SignupPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isAuthLoading}>
               {isLoading ? '가입 중...' : '회원가입'}
             </Button>
           </form>

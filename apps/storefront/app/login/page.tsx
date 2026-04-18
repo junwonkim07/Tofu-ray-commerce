@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -8,11 +8,13 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { authAPI } from '@/lib/api-client'
+import { useAuth } from '@/lib/auth-context'
 
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/inquiry'
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth()
   
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -21,6 +23,12 @@ export default function LoginPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated) {
+      router.replace(redirect)
+    }
+  }, [isAuthLoading, isAuthenticated, redirect, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -40,21 +48,17 @@ export default function LoginPage() {
 
       if (result.error) {
         setError(result.error)
-        setIsLoading(false)
         return
       }
 
       if (result.data) {
-        // Save token and user info
-        localStorage.setItem('authToken', result.data.token)
-        localStorage.setItem('userId', result.data.userId)
-        localStorage.setItem('userEmail', result.data.email)
-
-        // Navigate to redirect page or inquiry
-        router.push(redirect)
+        login(result.data)
+        router.replace(redirect)
+        router.refresh()
       }
     } catch (err) {
       setError('로그인 중 오류가 발생했습니다')
+    } finally {
       setIsLoading(false)
     }
   }
@@ -127,7 +131,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isAuthLoading}>
               {isLoading ? '로그인 중...' : '로그인'}
             </Button>
           </form>

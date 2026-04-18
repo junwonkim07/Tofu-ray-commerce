@@ -10,13 +10,13 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<Api
     const url = `${API_BASE_URL}${endpoint}`
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
 
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options?.headers,
+    const headers = new Headers(options?.headers)
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
     }
 
     if (token) {
-      headers.Authorization = `Bearer ${token}`
+      headers.set('Authorization', `Bearer ${token}`)
     }
 
     const response = await fetch(url, {
@@ -37,9 +37,17 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<Api
 }
 
 // Auth API
+type AuthResponse = { token: string; userId: string; email: string }
+
 export const authAPI = {
   login: (email: string, password: string) =>
-    fetchAPI<{ token: string; userId: string; email: string }>('/api/auth/login', {
+    fetchAPI<AuthResponse>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
+  signup: (email: string, password: string) =>
+    fetchAPI<AuthResponse>('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),

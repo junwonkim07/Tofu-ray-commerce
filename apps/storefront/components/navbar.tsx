@@ -1,12 +1,22 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
-import { Package } from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
+import { Package, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function Navbar() {
+  const router = useRouter()
   const { totalItems } = useCart()
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,14 +43,30 @@ export function Navbar() {
             문의
           </Link>
           <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">
-                로그인
-              </Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/signup">회원가입</Link>
-            </Button>
+            {isLoading ? (
+              <Button variant="ghost" size="sm" disabled>
+                확인 중...
+              </Button>
+            ) : isAuthenticated && user ? (
+              <>
+                <span className="text-xs text-muted-foreground max-w-[140px] truncate" title={user.email}>
+                  {user.email}
+                </span>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-1" />
+                  로그아웃
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/login">로그인</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/signup">회원가입</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
       </div>

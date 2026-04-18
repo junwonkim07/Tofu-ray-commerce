@@ -1,8 +1,9 @@
-const loginInfo = {
-  id: 'junwonkim07',
-  email: 'junwonkim07@example.com',
-  lastLogin: '2026-04-17 20:42',
-}
+'use client'
+
+import Link from 'next/link'
+import { useMemo } from 'react'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/lib/auth-context'
 
 const subscriptionInfo = {
   product: 'VPN Subscription - Premium',
@@ -11,7 +12,59 @@ const subscriptionInfo = {
   status: '활성',
 }
 
+function formatLastLogin(value: string | null) {
+  if (!value) {
+    return '기록 없음'
+  }
+
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) {
+    return value
+  }
+
+  return parsed.toLocaleString('ko-KR')
+}
+
 export default function MyPage() {
+  const { user, isAuthenticated, isLoading } = useAuth()
+
+  const loginInfo = useMemo(
+    () => ({
+      id: user?.userId ? user.userId.slice(0, 8) : '-',
+      email: user?.email || '-',
+      lastLogin:
+        typeof window !== 'undefined'
+          ? formatLastLogin(localStorage.getItem('lastLoginAt'))
+          : '기록 없음',
+    }),
+    [user]
+  )
+
+  if (isLoading) {
+    return (
+      <div className="container py-12">
+        <p className="text-muted-foreground">로그인 상태를 확인하는 중입니다...</p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container py-12 space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">마이페이지</h1>
+          <p className="text-muted-foreground mt-2">로그인 후 계정 및 구독 정보를 확인할 수 있습니다.</p>
+        </div>
+        <div className="border rounded-lg bg-card p-6 space-y-4">
+          <p className="text-sm text-muted-foreground">현재 로그인되어 있지 않습니다.</p>
+          <Button asChild>
+            <Link href="/login?redirect=/mypage">로그인하러 가기</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container py-12 space-y-8">
       <div>

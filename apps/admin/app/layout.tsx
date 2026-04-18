@@ -3,8 +3,8 @@ import './globals.css'
 import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-  title: '관리자 - Tofu Ray',
-  description: 'Tofu Ray 관리자 대시보드',
+  title: 'Tofu-ray Management',
+  description: 'Tofu Ray Admin Dashboard',
 }
 
 export default function RootLayout({

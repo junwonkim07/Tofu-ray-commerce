@@ -46,12 +46,12 @@ pnpm install
 
 ## Commands
 
-| Command        | Description                          |
-| -------------- | ------------------------------------ |
-| `pnpm dev`     | Start all apps in development mode   |
-| `pnpm build`   | Build all apps                       |
-| `pnpm lint`    | Lint all packages                    |
-| `pnpm format`  | Format all files with Prettier       |
+| Command         | Description                        |
+| --------------- | ---------------------------------- |
+| `pnpm dev`    | Start all apps in development mode |
+| `pnpm build`  | Build all apps                     |
+| `pnpm lint`   | Lint all packages                  |
+| `pnpm format` | Format all files with Prettier     |
 
 ### Run only the storefront
 
@@ -59,17 +59,21 @@ pnpm install
 pnpm --filter @tofu-ray/storefront dev
 ```
 
+```bash
+pnpm --filter @tofu-ray/admin dev
+```
+
 Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Storefront Pages
 
-| Route                     | Description              |
-| ------------------------- | ------------------------ |
-| `/`                       | Home page                |
-| `/products`               | Product listing          |
-| `/products/[handle]`      | Product detail           |
-| `/cart`                   | Shopping cart            |
-| `/checkout`               | Checkout form (UI only)  |
+| Route                  | Description             |
+| ---------------------- | ----------------------- |
+| `/`                  | Home page               |
+| `/products`          | Product listing         |
+| `/products/[handle]` | Product detail          |
+| `/cart`              | Shopping cart           |
+| `/checkout`          | Checkout form (UI only) |
 
 ## Features
 

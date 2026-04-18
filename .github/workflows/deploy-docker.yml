@@ -29,18 +29,19 @@ jobs:
             REPO_URL="https://github.com/${{ github.repository }}.git"
 
             if [ ! -d "$APP_DIR/.git" ]; then
-              sudo mkdir -p "$(dirname "$APP_DIR")"
-              sudo chown -R $USER:$USER "$(dirname "$APP_DIR")"
+              mkdir -p "$(dirname "$APP_DIR")"
               git clone "$REPO_URL" "$APP_DIR"
             fi
 
             cd "$APP_DIR"
 
-            cat > .env.production <<EOF
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            BCRYPT_ROUNDS=12
-            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
-            EOF
+            {
+              echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+              echo "BCRYPT_ROUNDS=12"
+              echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}"
+            } > .env.production
+
+            docker compose version
 
             chmod +x ./scripts/deploy/deploy-main.sh
 

@@ -80,6 +80,74 @@ What it does:
 
 The deploy stage can be added after your production server details are fixed.
 
+## Docker Deployment (Vultr Debian, AMD64)
+
+This repository includes production Docker deployment files:
+
+- [docker-compose.prod.yml](docker-compose.prod.yml)
+- [docker/nginx.prod.conf](docker/nginx.prod.conf)
+- [scripts/deploy/deploy-main.sh](scripts/deploy/deploy-main.sh)
+- [.github/workflows/deploy-docker.yml](.github/workflows/deploy-docker.yml)
+
+### 1) Server bootstrap (one time)
+
+Create deploy user and prepare SSH:
+
+```bash
+adduser deploy
+usermod -aG sudo deploy
+usermod -aG docker deploy
+install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
+```
+
+Add your public key to `authorized_keys`:
+
+```bash
+echo 'ssh-ed25519 YOUR_PUBLIC_KEY github-actions-deploy' >> /home/deploy/.ssh/authorized_keys
+chown -R deploy:deploy /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+chmod 600 /home/deploy/.ssh/authorized_keys
+```
+
+Install Docker (if not installed):
+
+```bash
+curl -fsSL https://get.docker.com | sh
+```
+
+### 2) GitHub Secrets
+
+Set these repository secrets:
+
+- `DEPLOY_HOST`: `158.247.215.87`
+- `DEPLOY_PORT`: `22`
+- `DEPLOY_USER`: `deploy`
+- `DEPLOY_SSH_KEY`: private key content used by GitHub Actions
+- `DEPLOY_PATH`: example `/home/deploy/tofu-ray-commerce`
+- `JWT_SECRET`: long random secret value
+- `CORS_ORIGIN`: `http://158.247.215.87:3000,http://158.247.215.87:3002`
+
+### 3) Deployment behavior
+
+- Trigger: push to `main` via [deploy-docker workflow](.github/workflows/deploy-docker.yml)
+- Script: [scripts/deploy/deploy-main.sh](scripts/deploy/deploy-main.sh)
+- Rollback: automatic rollback to previous commit if health check fails
+
+### 4) Network model
+
+- Storefront public: `:3000`
+- Admin public: `:3002`
+- Backend internal-only in Docker network
+- Browser uses same-origin `/api` through Nginx reverse proxy
+
+### 5) Optional local production test
+
+```bash
+cp .env.production.example .env.production
+docker compose -f docker-compose.prod.yml up -d --build
+curl -fsS http://127.0.0.1:3000/health
+```
+
 ### Run only the storefront
 
 ```bash

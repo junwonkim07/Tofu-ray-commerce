@@ -23,7 +23,7 @@ rollback() {
   echo "Deployment failed. Rolling back to $PREVIOUS_COMMIT"
   git fetch --all
   git checkout "$PREVIOUS_COMMIT"
-  docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
+  docker compose --env-file .env.production -f "$COMPOSE_FILE" up -d --build --remove-orphans
 }
 
 trap rollback ERR
@@ -33,7 +33,7 @@ git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
 
-docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
+docker compose --env-file .env.production -f "$COMPOSE_FILE" up -d --build --remove-orphans
 
 for i in {1..30}; do
   if curl -fsS http://127.0.0.1:3000/health > /dev/null; then

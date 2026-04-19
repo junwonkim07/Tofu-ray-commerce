@@ -152,9 +152,9 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
   log(`🎯 Webhook server listening on port ${PORT}`);
-  log(`📍 Endpoint: http://127.0.0.1:${PORT}/`);
+  log(`📍 Endpoint: http://0.0.0.0:${PORT}/`);
 });
 
 process.on('SIGTERM', () => {

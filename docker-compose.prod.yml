@@ -58,11 +58,26 @@ services:
       - storefront
       - admin
       - backend
+      - webhook
     ports:
       - "3000:3000"
       - "3002:3002"
     volumes:
       - ./docker/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+  webhook:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-your-secret-key}
+      APP_DIR: /app
+    command: node webhook-server.js
+    expose:
+      - "5555"
     restart: unless-stopped
 
 volumes:

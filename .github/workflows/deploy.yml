@@ -1,0 +1,29 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull latest code
+        run: cd /home/deploy/tofu-ray-commerce && git fetch origin main && git reset --hard origin/main
+
+      - name: Build and deploy with Docker Compose
+        run: cd /home/deploy/tofu-ray-commerce && docker compose --env-file .env.production -f docker-compose.prod.yml down --remove-orphans && docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
+
+      - name: Wait for services to be healthy
+        run: sleep 20
+
+      - name: Check service status
+        run: cd /home/deploy/tofu-ray-commerce && docker compose --env-file .env.production -f docker-compose.prod.yml ps
+
+      - name: Verify deployment
+        run: curl -f http://localhost:3000/ || exit 1

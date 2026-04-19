@@ -207,8 +207,17 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   log(`🎯 Webhook server listening on port ${PORT}`);
   log(`📍 Endpoint: http://0.0.0.0:${PORT}/`);
+  log(`🔒 Health check: http://0.0.0.0:${PORT}/health`);
 });
 
+server.on('error', (error) => {
+  log(`❌ Server error: ${error.message}`);
+  if (error.code === 'EADDRINUSE') {
+    log(`⚠️ Port ${PORT} is already in use`);
+  }
+});
+
+// Graceful shutdown
 process.on('SIGTERM', () => {
   log('🛑 Received SIGTERM, shutting down gracefully...');
   server.close(() => {
@@ -216,3 +225,26 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+
+process.on('SIGINT', () => {
+  log('🛑 Received SIGINT, shutting down gracefully...');
+  server.close(() => {
+    log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  log(`💥 Uncaught exception: ${error.message}`);
+  log(`📍 Stack: ${error.stack}`);
+  // Continue running instead of crashing
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  log(`💥 Unhandled rejection at ${promise}: ${reason}`);
+  // Continue running
+});
+
+log('✅ Webhook server initialized and ready');

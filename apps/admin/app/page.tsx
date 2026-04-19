@@ -44,6 +44,7 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
           <CardTitle className="text-2xl">Admin</CardTitle>
+          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
           {error && (

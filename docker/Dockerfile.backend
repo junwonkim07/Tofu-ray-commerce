@@ -15,7 +15,7 @@ WORKDIR /app
 COPY . .
 
 RUN pnpm install --frozen-lockfile
-RUN cd apps/backend && npm config set build_from_source true && npm config set sqlite /usr && pnpm rebuild sqlite3
+RUN cd apps/backend && npm_config_build_from_source=true npm_config_sqlite=/usr pnpm rebuild sqlite3
 RUN pnpm --filter @tofu-ray/backend build
 
 EXPOSE 5000

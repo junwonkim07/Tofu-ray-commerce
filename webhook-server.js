@@ -32,20 +32,30 @@ const verifySignature = (req, body) => {
     return false;
   }
 
-  const hash = crypto.createHmac('sha256', WEBHOOK_SECRET)
-    .update(body)
-    .digest('hex');
-  
-  const computedSignature = `sha256=${hash}`;
-  const isValid = crypto.timingSafeEqual(signature, computedSignature);
-  
-  if (!isValid) {
-    log('❌ Signature verification failed');
-  } else {
-    log('✅ Signature verified');
+  try {
+    const hash = crypto.createHmac('sha256', WEBHOOK_SECRET)
+      .update(body)
+      .digest('hex');
+    
+    const computedSignature = `sha256=${hash}`;
+    
+    // Convert strings to buffers for timingSafeEqual
+    const isValid = crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(computedSignature)
+    );
+    
+    if (!isValid) {
+      log('❌ Signature verification failed');
+    } else {
+      log('✅ Signature verified');
+    }
+    
+    return isValid;
+  } catch (error) {
+    log(`⚠️ Signature verification error: ${error.message}`);
+    return false;
   }
-  
-  return isValid;
 };
 
 const deploy = () => {

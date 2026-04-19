@@ -102,7 +102,7 @@ export default function InquiriesPage() {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-muted-foreground">{inquiry.createdAt}</p>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" type="button">
                       <Link href={`/dashboard/inquiries/${inquiry.id}`}>
                         답변하기
                       </Link>

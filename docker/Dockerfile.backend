@@ -15,6 +15,7 @@ WORKDIR /app
 COPY . .
 
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @tofu-ray/backend rebuild sqlite3
 RUN pnpm --filter @tofu-ray/backend build
 
 EXPOSE 5000

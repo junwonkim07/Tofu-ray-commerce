@@ -29,9 +29,21 @@ rollback() {
 trap rollback ERR
 
 echo "Deploying branch: $BRANCH"
+
+# Backup .env.production before git reset
+SAVED_ENV=""
+if [ -f .env.production ]; then
+  SAVED_ENV=$(cat .env.production)
+fi
+
 git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
+
+# Restore .env.production if it was backed up
+if [ -n "$SAVED_ENV" ]; then
+  echo "$SAVED_ENV" > .env.production
+fi
 
 docker compose --env-file .env.production -f "$COMPOSE_FILE" up -d --build --remove-orphans
 

@@ -43,8 +43,8 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl">Admin</CardTitle>
-          <CardDescription></CardDescription>
+          <CardTitle className="text-2xl">🔐 Tofu Ray 관리자 로그인 (Updated)</CardTitle>
+          <CardDescription>관리자만 접근 가능합니다</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
                   type="email"
                   name="adminEmail"
                   autoComplete="off"
-                  placeholder="관리자 이메일"
+                  placeholder="junwonkim07@outlook.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
@@ -78,7 +78,7 @@ export default function AdminLoginPage() {
                   type="password"
                   name="adminPassword"
                   autoComplete="new-password"
-                  placeholder="password"
+                  placeholder="••••••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}

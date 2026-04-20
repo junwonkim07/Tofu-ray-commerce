@@ -48,32 +48,41 @@ noticeRoutes.get('/:noticeId', (req: Request, res: Response) => {
 
 // Create notice (admin only)
 noticeRoutes.post('/', (req: Request, res: Response) => {
-  const { title, content, author } = req.body
+  try {
+    const { title, content, author } = req.body
 
-  if (!title || !content) {
-    return res.status(400).json({ error: 'Title and content required' })
-  }
-
-  const noticeId = uuidv4()
-  const now = new Date().toISOString()
-
-  db.run(
-    'INSERT INTO notices (id, title, content, author, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
-    [noticeId, title, content, author || '관리자', now, now],
-    function (err) {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to create notice' })
-      }
-
-      res.status(201).json({
-        noticeId,
-        title,
-        content,
-        author: author || '관리자',
-        createdAt: now,
-      })
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content required' })
     }
-  )
+
+    const noticeId = uuidv4()
+    const now = new Date().toISOString()
+
+    console.log(`📝 [Notice] Creating new notice: "${title}"`)
+    
+    db.run(
+      'INSERT INTO notices (id, title, content, author, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
+      [noticeId, title, content, author || '관리자', now, now],
+      function (err) {
+        if (err) {
+          console.error(`❌ [Notice] Database insert error:`, err.message)
+          return res.status(500).json({ error: 'Failed to create notice' })
+        }
+
+        console.log(`✅ [Notice] Notice created successfully: ${noticeId}`)
+        res.status(201).json({
+          noticeId,
+          title,
+          content,
+          author: author || '관리자',
+          createdAt: now,
+        })
+      }
+    )
+  } catch (error) {
+    console.error('❌ [Notice] Unexpected error:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
 })
 
 // Add comment to notice

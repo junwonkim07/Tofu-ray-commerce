@@ -30,58 +30,68 @@ function isBcryptHash(value: string) {
 
 // Signup
 authRoutes.post('/signup', (req: Request, res: Response) => {
-  const rawEmail = String(req.body?.email || '')
-  const password = String(req.body?.password || '')
-  const firstName = String(req.body?.name || req.body?.firstName || '')
+  try {
+    const rawEmail = String(req.body?.email || '')
+    const password = String(req.body?.password || '')
+    const firstName = String(req.body?.name || req.body?.firstName || '')
 
-  const email = normalizeEmail(rawEmail)
+    const email = normalizeEmail(rawEmail)
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password required' })
-  }
-
-  if (!isValidEmail(email)) {
-    return res.status(400).json({ error: 'Invalid email format' })
-  }
-
-  if (password.length < 8) {
-    return res.status(400).json({ error: 'Password must be at least 8 characters' })
-  }
-
-  db.get('SELECT id FROM users WHERE email = ?', [email], (err, existingUser: any) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' })
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password required' })
     }
 
-    if (existingUser) {
-      return res.status(409).json({ error: 'Email already in use' })
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ error: 'Invalid email format' })
     }
 
-    bcrypt.hash(password, BCRYPT_ROUNDS, (hashError, hashedPassword) => {
-      if (hashError) {
-        return res.status(500).json({ error: 'Failed to secure password' })
+    if (password.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters' })
+    }
+
+    db.get('SELECT id FROM users WHERE email = ?', [email], (err, existingUser: any) => {
+      if (err) {
+        console.error(`❌ [Signup] Database query error for email ${email}:`, err.message)
+        return res.status(500).json({ error: 'Database error' })
       }
 
-      const userId = uuidv4()
-      const now = new Date().toISOString()
+      if (existingUser) {
+        console.log(`⚠️ [Signup] Email already in use: ${email}`)
+        return res.status(409).json({ error: 'Email already in use' })
+      }
 
-      db.run(
-        'INSERT INTO users (id, email, password, firstName, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, email, hashedPassword, firstName, now, now],
-        function (insertError) {
-          if (insertError) {
-            return res.status(500).json({ error: 'Failed to create user' })
-          }
-
-          const token = jwt.sign({ userId, email }, JWT_SECRET, {
-            expiresIn: '24h',
-          })
-
-          return res.status(201).json({ token, userId, email })
+      bcrypt.hash(password, BCRYPT_ROUNDS, (hashError, hashedPassword) => {
+        if (hashError) {
+          console.error(`❌ [Signup] Bcrypt error for email ${email}:`, hashError.message)
+          return res.status(500).json({ error: 'Failed to secure password' })
         }
-      )
+
+        const userId = uuidv4()
+        const now = new Date().toISOString()
+
+        db.run(
+          'INSERT INTO users (id, email, password, firstName, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
+          [userId, email, hashedPassword, firstName, now, now],
+          function (insertError) {
+            if (insertError) {
+              console.error(`❌ [Signup] Database insert error for email ${email}:`, insertError.message)
+              return res.status(500).json({ error: 'Failed to create user' })
+            }
+
+            console.log(`✅ [Signup] User created successfully: ${email} (ID: ${userId})`)
+            const token = jwt.sign({ userId, email }, JWT_SECRET, {
+              expiresIn: '24h',
+            })
+
+            return res.status(201).json({ token, userId, email })
+          }
+        )
+      })
     })
-  })
+  } catch (error) {
+    console.error('❌ [Signup] Unexpected error:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
 })
 
 // Login

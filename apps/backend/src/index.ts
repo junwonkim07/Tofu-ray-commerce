@@ -44,7 +44,11 @@ app.use(express.urlencoded({ extended: true }))
 
 // Initialize database
 initializeDatabase()
-seedDatabase()
+
+// Seed database after a short delay to ensure tables are created
+setTimeout(() => {
+  seedDatabase()
+}, 500)
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

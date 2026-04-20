@@ -26,6 +26,16 @@ export const db = new sqlite3.Database(dbPath, (err) => {
 
 export function initializeDatabase() {
   db.serialize(() => {
+    let tablesCreated = 0
+    const totalTables = 6
+
+    const onTableCreated = () => {
+      tablesCreated++
+      if (tablesCreated === totalTables) {
+        console.log('✅ All database tables initialized successfully')
+      }
+    }
+
     // Users table
     db.run(`
       CREATE TABLE IF NOT EXISTS users (
@@ -39,7 +49,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating users table:', err.message)
-      else console.log('✅ Users table ready')
+      else {
+        console.log('✅ Users table ready')
+        onTableCreated()
+      }
     })
 
     // Orders table
@@ -67,7 +80,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating orders table:', err.message)
-      else console.log('✅ Orders table ready')
+      else {
+        console.log('✅ Orders table ready')
+        onTableCreated()
+      }
     })
 
     // Inquiries table
@@ -85,7 +101,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating inquiries table:', err.message)
-      else console.log('✅ Inquiries table ready')
+      else {
+        console.log('✅ Inquiries table ready')
+        onTableCreated()
+      }
     })
 
     // Inquiry messages table
@@ -101,7 +120,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating inquiry_messages table:', err.message)
-      else console.log('✅ Inquiry_messages table ready')
+      else {
+        console.log('✅ Inquiry_messages table ready')
+        onTableCreated()
+      }
     })
 
     // Notices table
@@ -116,7 +138,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating notices table:', err.message)
-      else console.log('✅ Notices table ready')
+      else {
+        console.log('✅ Notices table ready')
+        onTableCreated()
+      }
     })
 
     // Notice comments table
@@ -131,7 +156,10 @@ export function initializeDatabase() {
       )
     `, (err) => {
       if (err) console.error('❌ Error creating notice_comments table:', err.message)
-      else console.log('✅ Notice_comments table ready')
+      else {
+        console.log('✅ Notice_comments table ready')
+        onTableCreated()
+      }
     })
 
     console.log('🗄️ Database initialization started')

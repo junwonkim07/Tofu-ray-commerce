@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Loader2, Plus, ArrowRight, Search, Trash2 } from 'lucide-react'
+import { Loader2, Plus, Search, Trash2 } from 'lucide-react'
 import { adminNoticeAPI } from '@/lib/api-client'
 import AdminLayout from '@/components/admin-layout'
 

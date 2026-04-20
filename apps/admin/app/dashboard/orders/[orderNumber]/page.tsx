@@ -306,11 +306,3 @@ export default function OrderDetailPage() {
   )
 }
 
-export default function OrderDetailPage() {
-  const params = useParams<{ orderNumber: string }>()
-  const [order, setOrder] = useState<OrderDetail | null>(null)
-  const [status, setStatus] = useState('pending')
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)

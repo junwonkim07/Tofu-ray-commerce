@@ -1,0 +1,50 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="white"/>
+  
+  <!-- Alipay QR Code Placeholder -->
+  <g fill="black">
+    <!-- Top-left position marker -->
+    <rect x="20" y="20" width="50" height="50"/>
+    <rect x="30" y="30" width="30" height="30" fill="white"/>
+    <rect x="40" y="40" width="10" height="10" fill="black"/>
+    
+    <!-- Top-right position marker -->
+    <rect x="186" y="20" width="50" height="50"/>
+    <rect x="196" y="30" width="30" height="30" fill="white"/>
+    <rect x="206" y="40" width="10" height="10" fill="black"/>
+    
+    <!-- Bottom-left position marker -->
+    <rect x="20" y="186" width="50" height="50"/>
+    <rect x="30" y="196" width="30" height="30" fill="white"/>
+    <rect x="40" y="206" width="10" height="10" fill="black"/>
+  </g>
+  
+  <!-- Random QR pattern (different from WeChat) -->
+  <g fill="black" opacity="0.7">
+    <rect x="75" y="85" width="8" height="8"/>
+    <rect x="95" y="85" width="8" height="8"/>
+    <rect x="125" y="85" width="8" height="8"/>
+    <rect x="145" y="85" width="8" height="8"/>
+    <rect x="165" y="85" width="8" height="8"/>
+    
+    <rect x="85" y="105" width="8" height="8"/>
+    <rect x="135" y="105" width="8" height="8"/>
+    <rect x="155" y="105" width="8" height="8"/>
+    
+    <rect x="105" y="125" width="8" height="8"/>
+    <rect x="125" y="125" width="8" height="8"/>
+    <rect x="165" y="125" width="8" height="8"/>
+    
+    <rect x="75" y="145" width="8" height="8"/>
+    <rect x="115" y="145" width="8" height="8"/>
+    <rect x="145" y="145" width="8" height="8"/>
+    
+    <rect x="125" y="165" width="8" height="8"/>
+    <rect x="145" y="165" width="8" height="8"/>
+    <rect x="155" y="165" width="8" height="8"/>
+  </g>
+  
+  <!-- Alipay label -->
+  <text x="128" y="220" font-size="14" font-weight="bold" text-anchor="middle" fill="black">Alipay</text>
+</svg>

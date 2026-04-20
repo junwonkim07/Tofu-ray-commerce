@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Lock, Mail } from 'lucide-react'
 
-const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'junwonkim07'
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'junwonkim04@outlook.com'
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'woojaewoojae1209@'
 
 export default function AdminLoginPage() {
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
                   type="email"
                   name="adminEmail"
                   autoComplete="off"
-                  placeholder="junwonkim07@outlook.com"
+                  placeholder="junwonkim04@outlook.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}

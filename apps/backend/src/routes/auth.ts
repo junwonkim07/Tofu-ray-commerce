@@ -32,6 +32,7 @@ function isBcryptHash(value: string) {
 authRoutes.post('/signup', (req: Request, res: Response) => {
   const rawEmail = String(req.body?.email || '')
   const password = String(req.body?.password || '')
+  const firstName = String(req.body?.name || req.body?.firstName || '')
 
   const email = normalizeEmail(rawEmail)
 
@@ -65,8 +66,8 @@ authRoutes.post('/signup', (req: Request, res: Response) => {
       const now = new Date().toISOString()
 
       db.run(
-        'INSERT INTO users (id, email, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)',
-        [userId, email, hashedPassword, now, now],
+        'INSERT INTO users (id, email, password, firstName, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)',
+        [userId, email, hashedPassword, firstName, now, now],
         function (insertError) {
           if (insertError) {
             return res.status(500).json({ error: 'Failed to create user' })

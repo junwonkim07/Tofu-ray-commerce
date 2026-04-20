@@ -65,7 +65,7 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      const result = await authAPI.signup(formData.email, formData.password)
+      const result = await authAPI.signup(formData.email, formData.password, formData.name)
 
       if (result.error) {
         setError(result.error)

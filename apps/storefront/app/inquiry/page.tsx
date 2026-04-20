@@ -121,7 +121,7 @@ export default function InquiryPage() {
     }
 
     initializeInquiry()
-  }, [cart])
+  }, [inquiryId, cart])
 
   const sendMessage = async () => {
     const content = draft.trim()

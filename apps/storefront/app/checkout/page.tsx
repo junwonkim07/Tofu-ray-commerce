@@ -23,7 +23,7 @@ const initialForm: CheckoutForm = {
   city: '',
   state: '',
   postalCode: '',
-  country: 'ëŒ€í•œë¯¼êµ­',
+  country: '´ëÇÑ¹Î±¹',
 }
 
 type PaymentMethod = 'wechat' | 'alipay' | 'toss' | null
@@ -60,7 +60,7 @@ export default function CheckoutPage() {
     setError(null)
     
     if (!paymentMethod) {
-      setError('ê²°ì œ ë°©ë²•ì„ ì„ íƒí•´ì£¼ì„¸ìš”')
+      setError('°áÁ¦ ¹æ¹ıÀ» ¼±ÅÃÇØÁÖ¼¼¿ä')
       return
     }
     
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
         setSubmitted(true)
       }
     } catch (err) {
-      setError('ì£¼ë¬¸ ì²˜ë¦¬ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤')
+      setError('ÁÖ¹® Ã³¸® Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù')
       setIsLoading(false)
     }
   }
@@ -112,20 +112,20 @@ export default function CheckoutPage() {
             <div className="mb-8">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/products">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> ê³„ì† ì‡¼í•‘í•˜ê¸°
+                  <ArrowLeft className="mr-2 h-4 w-4" /> °è¼Ó ¼îÇÎÇÏ±â
                 </Link>
               </Button>
             </div>
 
             <div className="border rounded-lg p-8 bg-card space-y-6">
               <div className="text-center space-y-2 mb-8">
-                <h1 className="text-3xl font-bold">ê²°ì œ ì •ë³´ í™•ì¸</h1>
-                <p className="text-muted-foreground">ì£¼ë¬¸ë²ˆí˜¸: <span className="font-mono font-semibold">{orderNumber}</span></p>
+                <h1 className="text-3xl font-bold">°áÁ¦ Á¤º¸ È®ÀÎ</h1>
+                <p className="text-muted-foreground">ÁÖ¹®¹øÈ£: <span className="font-mono font-semibold">{orderNumber}</span></p>
               </div>
 
               {paymentMethod === 'wechat' && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">WeChat Payë¡œ ê²°ì œí•˜ê¸°</h2>
+                  <h2 className="text-lg font-semibold">WeChat Pay·Î °áÁ¦ÇÏ±â</h2>
                   <div className="flex justify-center p-6 bg-muted rounded-lg">
                     <Image
                       src="/weixinQR.svg"
@@ -137,14 +137,14 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    ìœ„ì˜ QR ì½”ë“œë¥¼ WeChatìœ¼ë¡œ ìŠ¤ìº”í•˜ì—¬ ê²°ì œí•´ì£¼ì„¸ìš”.
+                    À§ÀÇ QR ÄÚµå¸¦ WeChatÀ¸·Î ½ºÄµÇÏ¿© °áÁ¦ÇØÁÖ¼¼¿ä.
                   </p>
                 </div>
               )}
 
               {paymentMethod === 'alipay' && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">Alipayë¡œ ê²°ì œí•˜ê¸°</h2>
+                  <h2 className="text-lg font-semibold">Alipay·Î °áÁ¦ÇÏ±â</h2>
                   <div className="flex justify-center p-6 bg-muted rounded-lg">
                     <Image
                       src="/zhifubaoQR.svg"
@@ -156,27 +156,27 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    ìœ„ì˜ QR ì½”ë“œë¥¼ Alipayë¡œ ìŠ¤ìº”í•˜ì—¬ ê²°ì œí•´ì£¼ì„¸ìš”.
+                    À§ÀÇ QR ÄÚµå¸¦ Alipay·Î ½ºÄµÇÏ¿© °áÁ¦ÇØÁÖ¼¼¿ä.
                   </p>
                 </div>
               )}
 
               {paymentMethod === 'toss' && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">í† ìŠ¤ë±…í¬ ê³„ì¢Œë¡œ ê²°ì œí•˜ê¸°</h2>
+                  <h2 className="text-lg font-semibold">Åä½º¹ğÅ© °èÁÂ·Î °áÁ¦ÇÏ±â</h2>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 space-y-4">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">ì€í–‰</p>
-                      <p className="text-xl font-semibold">í† ìŠ¤ë±…í¬</p>
+                      <p className="text-sm font-medium text-muted-foreground">ÀºÇà</p>
+                      <p className="text-xl font-semibold">Åä½º¹ğÅ©</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">ê³„ì¢Œë²ˆí˜¸</p>
+                      <p className="text-sm font-medium text-muted-foreground">°èÁÂ¹øÈ£</p>
                       <div className="flex items-center gap-2">
                         <p className="text-xl font-mono font-semibold">1002-433-856199</p>
                         <button
                           onClick={handleCopyBankAccount}
                           className="p-2 hover:bg-blue-100 rounded transition"
-                          title="ê³„ì¢Œë²ˆí˜¸ ë³µì‚¬"
+                          title="°èÁÂ¹øÈ£ º¹»ç"
                         >
                           {copiedBankAccount ? (
                             <Check className="h-4 w-4 text-blue-600" />
@@ -187,16 +187,16 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">ì˜ˆê¸ˆì£¼</p>
-                      <p className="text-lg font-semibold">ê¹€ì¤€ì›</p>
+                      <p className="text-sm font-medium text-muted-foreground">¿¹±İÁÖ</p>
+                      <p className="text-lg font-semibold">±èÁØ¿ø</p>
                     </div>
                     <div className="pt-2 border-t">
-                      <p className="text-sm font-medium text-muted-foreground mb-2">ê²°ì œê¸ˆì•¡</p>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">°áÁ¦±İ¾×</p>
                       <p className="text-2xl font-bold">{formatPrice(total, currency)}</p>
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    ìœ„ì˜ ê³„ì¢Œë¡œ ì…ê¸ˆí•´ì£¼ì„¸ìš”. ì…ê¸ˆ í›„ ì•„ë˜ "ê²°ì œ ì™„ë£Œ" ë²„íŠ¼ì„ ëˆŒëŸ¬ì£¼ì„¸ìš”.
+                    À§ÀÇ °èÁÂ·Î ÀÔ±İÇØÁÖ¼¼¿ä. ÀÔ±İ ÈÄ ¾Æ·¡ "°áÁ¦ ¿Ï·á" ¹öÆ°À» ´­·¯ÁÖ¼¼¿ä.
                   </p>
                 </div>
               )}
@@ -205,10 +205,10 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
                 <div className="text-sm">
-                  <p className="font-medium mb-2">ì£¼ë¬¸ ì •ë³´</p>
+                  <p className="font-medium mb-2">ÁÖ¹® Á¤º¸</p>
                   <ul className="space-y-1 text-muted-foreground">
-                    <li>ê²°ì œ ê¸ˆì•¡: <span className="text-foreground font-semibold">{formatPrice(total, currency)}</span></li>
-                    <li>ê²°ì œ ë°©ë²•: <span className="text-foreground font-semibold capitalize">{paymentMethod === 'wechat' ? 'WeChat Pay' : paymentMethod === 'alipay' ? 'Alipay' : 'í† ìŠ¤ë±…í¬'}</span></li>
+                    <li>°áÁ¦ ±İ¾×: <span className="text-foreground font-semibold">{formatPrice(total, currency)}</span></li>
+                    <li>°áÁ¦ ¹æ¹ı: <span className="text-foreground font-semibold capitalize">{paymentMethod === 'wechat' ? 'WeChat Pay' : paymentMethod === 'alipay' ? 'Alipay' : 'Åä½º¹ğÅ©'}</span></li>
                   </ul>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                   className="w-full"
                   size="lg"
                 >
-                  ê²°ì œ ì™„ë£Œ
+                  °áÁ¦ ¿Ï·á
                 </Button>
                 <Button
                   variant="outline"
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                   className="w-full"
                   size="lg"
                 >
-                  ê²°ì œ ë°©ë²• ë³€ê²½
+                  °áÁ¦ ¹æ¹ı º¯°æ
                 </Button>
               </div>
             </div>
@@ -242,16 +242,16 @@ export default function CheckoutPage() {
           <CheckCircle className="h-12 w-12 text-green-600" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold">ê²°ì œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤</h1>
+          <h1 className="text-3xl font-bold">°áÁ¦°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù</h1>
           <p className="text-muted-foreground mt-2 max-w-md">
-            ì£¼ë¬¸ë²ˆí˜¸: <span className="font-mono font-semibold">{orderNumber}</span>
+            ÁÖ¹®¹øÈ£: <span className="font-mono font-semibold">{orderNumber}</span>
           </p>
           <p className="text-muted-foreground mt-4 max-w-md">
-            ê²°ì œ í™•ì¸ í›„ ë§ˆì´í˜ì´ì§€ì—ì„œ êµ¬ë… ì •ë³´(VPN Subscription)ë¥¼ í™•ì¸í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.
+            °áÁ¦ È®ÀÎ ÈÄ ¸¶ÀÌÆäÀÌÁö¿¡¼­ ±¸µ¶ Á¤º¸(VPN Subscription)¸¦ È®ÀÎÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.
           </p>
         </div>
         <Button onClick={() => router.push('/mypage')} size="lg">
-          ë§ˆì´í˜ì´ì§€ë¡œ ì´ë™
+          ¸¶ÀÌÆäÀÌÁö·Î ÀÌµ¿
         </Button>
       </div>
     )
@@ -260,9 +260,9 @@ export default function CheckoutPage() {
   if (cart.items.length === 0) {
     return (
       <div className="container py-24 flex flex-col items-center justify-center text-center gap-4">
-        <h1 className="text-2xl font-bold">ì¥ë°”êµ¬ë‹ˆê°€ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤</h1>
+        <h1 className="text-2xl font-bold">Àå¹Ù±¸´Ï°¡ ºñ¾î ÀÖ½À´Ï´Ù</h1>
         <Button asChild>
-          <Link href="/products">êµ¬ë… ìƒí’ˆ ë³´ê¸°</Link>
+          <Link href="/products">±¸µ¶ »óÇ° º¸±â</Link>
         </Button>
       </div>
     )
@@ -273,10 +273,10 @@ export default function CheckoutPage() {
       <div className="mb-8">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/cart">
-            <ArrowLeft className="mr-2 h-4 w-4" /> ì¥ë°”êµ¬ë‹ˆë¡œ ëŒì•„ê°€ê¸°
+            <ArrowLeft className="mr-2 h-4 w-4" /> Àå¹Ù±¸´Ï·Î µ¹¾Æ°¡±â
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mt-4">ê²°ì œ ì •ë³´ ì…ë ¥</h1>
+        <h1 className="text-3xl font-bold mt-4">°áÁ¦ Á¤º¸ ÀÔ·Â</h1>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -288,33 +288,33 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="border rounded-lg p-6 bg-card space-y-4">
-              <h2 className="text-lg font-semibold">ì—°ë½ì²˜ ì •ë³´</h2>
+              <h2 className="text-lg font-semibold">¿¬¶ôÃ³ Á¤º¸</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">ì´ë¦„</Label>
+                  <Label htmlFor="firstName">ÀÌ¸§</Label>
                   <Input
                     id="firstName"
                     name="firstName"
                     value={form.firstName}
                     onChange={handleChange}
                     required
-                    placeholder="ê¸¸ë™"
+                    placeholder="±æµ¿"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">ì„±</Label>
+                  <Label htmlFor="lastName">¼º</Label>
                   <Input
                     id="lastName"
                     name="lastName"
                     value={form.lastName}
                     onChange={handleChange}
                     required
-                    placeholder="í™"
+                    placeholder="È«"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">ì´ë©”ì¼ ì£¼ì†Œ</Label>
+                <Label htmlFor="email">ÀÌ¸ŞÀÏ ÁÖ¼Ò</Label>
                 <Input
                   id="email"
                   name="email"
@@ -326,7 +326,7 @@ export default function CheckoutPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">ì—°ë½ì²˜</Label>
+                <Label htmlFor="phone">¿¬¶ôÃ³</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -339,44 +339,44 @@ export default function CheckoutPage() {
             </div>
 
             <div className="border rounded-lg p-6 bg-card space-y-4">
-              <h2 className="text-lg font-semibold">ì²­êµ¬ì§€ ì£¼ì†Œ</h2>
+              <h2 className="text-lg font-semibold">Ã»±¸Áö ÁÖ¼Ò</h2>
               <div className="space-y-2">
-                <Label htmlFor="address">ìƒì„¸ ì£¼ì†Œ</Label>
+                <Label htmlFor="address">»ó¼¼ ÁÖ¼Ò</Label>
                 <Input
                   id="address"
                   name="address"
                   value={form.address}
                   onChange={handleChange}
                   required
-                  placeholder="ì„œìš¸ì‹œ ê°•ë‚¨êµ¬ ..."
+                  placeholder="¼­¿ï½Ã °­³²±¸ ..."
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="city">ë„ì‹œ</Label>
+                  <Label htmlFor="city">µµ½Ã</Label>
                   <Input
                     id="city"
                     name="city"
                     value={form.city}
                     onChange={handleChange}
                     required
-                    placeholder="ì„œìš¸"
+                    placeholder="¼­¿ï"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state">ì‹œ/ë„</Label>
+                  <Label htmlFor="state">½Ã/µµ</Label>
                   <Input
                     id="state"
                     name="state"
                     value={form.state}
                     onChange={handleChange}
-                    placeholder="ì„œìš¸íŠ¹ë³„ì‹œ"
+                    placeholder="¼­¿ïÆ¯º°½Ã"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="postalCode">ìš°í¸ë²ˆí˜¸</Label>
+                  <Label htmlFor="postalCode">¿ìÆí¹øÈ£</Label>
                   <Input
                     id="postalCode"
                     name="postalCode"
@@ -387,23 +387,23 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country">êµ­ê°€</Label>
+                  <Label htmlFor="country">±¹°¡</Label>
                   <Input
                     id="country"
                     name="country"
                     value={form.country}
                     onChange={handleChange}
                     required
-                    placeholder="ëŒ€í•œë¯¼êµ­"
+                    placeholder="´ëÇÑ¹Î±¹"
                   />
                 </div>
               </div>
             </div>
 
             <div className="border rounded-lg p-6 bg-card space-y-4">
-              <h2 className="text-lg font-semibold">ê²°ì œ ë°©ë²• ì„ íƒ</h2>
+              <h2 className="text-lg font-semibold">°áÁ¦ ¹æ¹ı ¼±ÅÃ</h2>
               <div className="space-y-3">
-                <label className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition ${paymentMethod === 'wechat' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label className={lex items-center gap-4 p-4 border rounded-lg cursor-pointer transition \}>
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -414,11 +414,11 @@ export default function CheckoutPage() {
                   />
                   <div>
                     <p className="font-semibold">WeChat Pay</p>
-                    <p className="text-sm text-muted-foreground">ì¤‘êµ­ ìœ„ì±—ìœ¼ë¡œ ê²°ì œ</p>
+                    <p className="text-sm text-muted-foreground">Áß±¹ À§ÃªÀ¸·Î °áÁ¦</p>
                   </div>
                 </label>
 
-                <label className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition ${paymentMethod === 'alipay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label className={lex items-center gap-4 p-4 border rounded-lg cursor-pointer transition \}>
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -429,11 +429,11 @@ export default function CheckoutPage() {
                   />
                   <div>
                     <p className="font-semibold">Alipay</p>
-                    <p className="text-sm text-muted-foreground">ì•Œë¦¬í˜ì´ë¡œ ê²°ì œ</p>
+                    <p className="text-sm text-muted-foreground">¾Ë¸®ÆäÀÌ·Î °áÁ¦</p>
                   </div>
                 </label>
 
-                <label className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition ${paymentMethod === 'toss' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label className={lex items-center gap-4 p-4 border rounded-lg cursor-pointer transition \}>
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -443,31 +443,31 @@ export default function CheckoutPage() {
                     className="w-4 h-4"
                   />
                   <div>
-                    <p className="font-semibold">í† ìŠ¤ë±…í¬</p>
-                    <p className="text-sm text-muted-foreground">1002-433-856199 (ê¹€ì¤€ì›)</p>
+                    <p className="font-semibold">Åä½º¹ğÅ©</p>
+                    <p className="text-sm text-muted-foreground">1002-433-856199 (±èÁØ¿ø)</p>
                   </div>
                 </label>
               </div>
             </div>
 
             <div className="border rounded-lg p-6 bg-muted/30 space-y-2">
-              <h2 className="text-lg font-semibold">ê²°ì œ í›„ ì•ˆë‚´</h2>
+              <h2 className="text-lg font-semibold">°áÁ¦ ÈÄ ¾È³»</h2>
               <p className="text-sm text-muted-foreground">
-                ê²°ì œ ì™„ë£Œ í›„ <strong>ë§ˆì´í˜ì´ì§€</strong>ì—ì„œ ì£¼ë¬¸ ë‚´ì—­ì„ í™•ì¸í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤. 
-                ê´€ë¦¬ìê°€ ê²°ì œë¥¼ í™•ì¸í•˜ë©´ êµ¬ë… ì •ë³´(VPN ì ‘ì† ì •ë³´)ë¥¼ ì´ë©”ì¼ë¡œ ì „ë‹¬í•´ë“œë¦½ë‹ˆë‹¤.
+                °áÁ¦ ¿Ï·á ÈÄ <strong>¸¶ÀÌÆäÀÌÁö</strong>¿¡¼­ ÁÖ¹® ³»¿ªÀ» È®ÀÎÇÒ ¼ö ÀÖ½À´Ï´Ù. 
+                °ü¸®ÀÚ°¡ °áÁ¦¸¦ È®ÀÎÇÏ¸é ±¸µ¶ Á¤º¸(VPN Á¢¼Ó Á¤º¸)¸¦ ÀÌ¸ŞÀÏ·Î Àü´ŞÇØµå¸³´Ï´Ù.
               </p>
             </div>
           </div>
 
           <div className="lg:col-span-1">
             <div className="border rounded-lg p-6 bg-card space-y-4 sticky top-20">
-              <h2 className="text-xl font-semibold">ì£¼ë¬¸ ìš”ì•½</h2>
+              <h2 className="text-xl font-semibold">ÁÖ¹® ¿ä¾à</h2>
               <Separator />
               <div className="space-y-3">
                 {cart.items.map((item) => (
                   <div key={item.product.id} className="flex justify-between text-sm gap-2">
                     <span className="text-muted-foreground">
-                      {item.product.title} <span className="text-xs">Ã—{item.quantity}</span>
+                      {item.product.title} <span className="text-xs">¡¿{item.quantity}</span>
                     </span>
                     <span>{formatPrice(item.product.price * item.quantity, item.product.currency)}</span>
                   </div>
@@ -476,214 +476,21 @@ export default function CheckoutPage() {
               <Separator />
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">ìƒí’ˆ ê¸ˆì•¡</span>
+                  <span className="text-muted-foreground">»óÇ° ±İ¾×</span>
                   <span>{formatPrice(totalPrice, currency)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">ì „ë‹¬ ìˆ˜ìˆ˜ë£Œ</span>
-                  <span>{shipping === 0 ? 'ë¬´ë£Œ' : formatPrice(shipping, currency)}</span>
+                  <span className="text-muted-foreground">¹è¼Û·á</span>
+                  <span>{shipping === 0 ? '¹«·á' : formatPrice(shipping, currency)}</span>
                 </div>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold text-lg">
-                <span>í•©ê³„</span>
+                <span>ÇÕ°è</span>
                 <span>{formatPrice(total, currency)}</span>
               </div>
               <Button type="submit" className="w-full" size="lg" disabled={isLoading || !paymentMethod}>
-                {isLoading ? 'ì£¼ë¬¸ ì²˜ë¦¬ ì¤‘...' : 'ë‹¤ìŒ: ê²°ì œ í™•ì¸'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-  if (cart.items.length === 0) {
-    return (
-      <div className="container py-24 flex flex-col items-center justify-center text-center gap-4">
-        <h1 className="text-2xl font-bold">ì¥ë°”êµ¬ë‹ˆê°€ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤</h1>
-        <Button asChild>
-          <Link href="/products">êµ¬ë… ìƒí’ˆ ë³´ê¸°</Link>
-        </Button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="container py-12">
-      <div className="mb-8">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/cart">
-            <ArrowLeft className="mr-2 h-4 w-4" /> ì¥ë°”êµ¬ë‹ˆë¡œ ëŒì•„ê°€ê¸°
-          </Link>
-        </Button>
-        <h1 className="text-3xl font-bold mt-4">ê²°ì œ ì •ë³´ ì…ë ¥</h1>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500 text-red-600 rounded-lg">
-            {error}
-          </div>
-        )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="border rounded-lg p-6 bg-card space-y-4">
-              <h2 className="text-lg font-semibold">ì—°ë½ì²˜ ì •ë³´</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">ì´ë¦„</Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    value={form.firstName}
-                    onChange={handleChange}
-                    required
-                    placeholder="ê¸¸ë™"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">ì„±</Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    value={form.lastName}
-                    onChange={handleChange}
-                    required
-                    placeholder="í™"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">ì´ë©”ì¼ ì£¼ì†Œ</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="example@email.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">ì—°ë½ì²˜</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="010-0000-0000"
-                />
-              </div>
-            </div>
-
-            <div className="border rounded-lg p-6 bg-card space-y-4">
-              <h2 className="text-lg font-semibold">ì²­êµ¬ì§€ ì£¼ì†Œ</h2>
-              <div className="space-y-2">
-                <Label htmlFor="address">ìƒì„¸ ì£¼ì†Œ</Label>
-                <Input
-                  id="address"
-                  name="address"
-                  value={form.address}
-                  onChange={handleChange}
-                  required
-                  placeholder="ì„œìš¸ì‹œ ê°•ë‚¨êµ¬ ..."
-                />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="city">ë„ì‹œ</Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    required
-                    placeholder="ì„œìš¸"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">ì‹œ/ë„</Label>
-                  <Input
-                    id="state"
-                    name="state"
-                    value={form.state}
-                    onChange={handleChange}
-                    placeholder="ì„œìš¸íŠ¹ë³„ì‹œ"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="postalCode">ìš°í¸ë²ˆí˜¸</Label>
-                  <Input
-                    id="postalCode"
-                    name="postalCode"
-                    value={form.postalCode}
-                    onChange={handleChange}
-                    required
-                    placeholder="12345"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="country">êµ­ê°€</Label>
-                  <Input
-                    id="country"
-                    name="country"
-                    value={form.country}
-                    onChange={handleChange}
-                    required
-                    placeholder="ëŒ€í•œë¯¼êµ­"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="border rounded-lg p-6 bg-muted/30 space-y-2">
-              <h2 className="text-lg font-semibold">êµ¬ë… ì•ˆë‚´</h2>
-              <p className="text-sm text-muted-foreground">
-                ê²°ì œ ì™„ë£Œ í›„ <strong>ë¬¸ì˜ í˜ì´ì§€</strong>ì—ì„œ ì£¼ë¬¸ë²ˆí˜¸ë¥¼ ë‚¨ê²¨ì£¼ì‹œë©´ êµ¬ë… ì •ë³´(VPN Subscription)
-                ì˜ ë§Œë£Œì¼/ì¢…ë¥˜/ì ‘ì† ë§í¬ë¥¼ ì „ë‹¬í•´ë“œë¦½ë‹ˆë‹¤.
-              </p>
-            </div>
-          </div>
-
-          <div className="lg:col-span-1">
-            <div className="border rounded-lg p-6 bg-card space-y-4 sticky top-20">
-              <h2 className="text-xl font-semibold">ì£¼ë¬¸ ìš”ì•½</h2>
-              <Separator />
-              <div className="space-y-3">
-                {cart.items.map((item) => (
-                  <div key={item.product.id} className="flex justify-between text-sm gap-2">
-                    <span className="text-muted-foreground">
-                      {item.product.title} <span className="text-xs">Ã—{item.quantity}</span>
-                    </span>
-                    <span>{formatPrice(item.product.price * item.quantity, item.product.currency)}</span>
-                  </div>
-                ))}
-              </div>
-              <Separator />
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">ìƒí’ˆ ê¸ˆì•¡</span>
-                  <span>{formatPrice(totalPrice, currency)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">ì „ë‹¬ ìˆ˜ìˆ˜ë£Œ</span>
-                  <span>{shipping === 0 ? 'ë¬´ë£Œ' : formatPrice(shipping, currency)}</span>
-                </div>
-              </div>
-              <Separator />
-              <div className="flex justify-between font-semibold text-lg">
-                <span>í•©ê³„</span>
-                <span>{formatPrice(total, currency)}</span>
-              </div>
-              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                {isLoading ? 'ì£¼ë¬¸ ì²˜ë¦¬ ì¤‘...' : 'ì£¼ë¬¸ ì™„ë£Œ'}
+                {isLoading ? 'ÁÖ¹® Ã³¸® Áß...' : '´ÙÀ½: °áÁ¦ È®ÀÎ'}
               </Button>
             </div>
           </div>

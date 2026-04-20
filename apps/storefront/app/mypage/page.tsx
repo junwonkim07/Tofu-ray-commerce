@@ -15,11 +15,17 @@ const subscriptionInfo = {
   status: '활성',
 }
 
+interface OrderItem {
+  product?: { title: string }
+  title?: string
+  quantity: number
+}
+
 type Order = {
   id: string
   userId: string | null
   orderNumber: string
-  items: any[]
+  items: OrderItem[]
   totalPrice: number
   currency: string
   email: string
@@ -220,7 +226,7 @@ export default function MyPage() {
                   <p className="text-muted-foreground">주문 상품:</p>
                   <ul className="space-y-1">
                     {order.items && order.items.length > 0 ? (
-                      order.items.map((item: any, index: number) => (
+                      order.items.map((item: OrderItem, index: number) => (
                         <li key={index} className="text-sm">
                           • {item.product?.title || item.title || '상품'} × {item.quantity}
                         </li>

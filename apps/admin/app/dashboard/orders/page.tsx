@@ -57,7 +57,7 @@ export default function OrdersPage() {
       case 'completed':
         return 'default'
       case 'cancelled':
-        return 'destructive'
+        return 'danger'
       default:
         return 'secondary'
     }

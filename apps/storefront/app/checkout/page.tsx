@@ -196,7 +196,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    위의 계좌로 입금해주세요. 입금 후 아래 "결제 완료" 버튼을 눌러주세요.
+                    위의 계좌로 입금해주세요. 입금 후 아래 &quot;결제 완료&quot; 버튼을 눌러주세요.
                   </p>
                 </div>
               )}
